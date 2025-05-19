@@ -1,3 +1,12 @@
+# ... (imports and code) ...
+
+app = Flask(__name__)
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'dev_default_insecure_secret_key_change_me!')
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+csrf = CSRFProtect(app)
+
+# Ensure csrf_token is available in all templates
 @app.context_processor
 def inject_csrf_token():
     from flask_wtf.csrf import generate_csrf
