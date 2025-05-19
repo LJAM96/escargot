@@ -1,8 +1,10 @@
 name: Build and Push Docker image to GHCR on Release
 
+
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   build-and-push:
@@ -26,7 +28,12 @@ jobs:
 
       - name: Extract release tag
         id: extract_tag
-        run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "RELEASE_TAG=${{ inputs.tag || 'manual' }}" >> $GITHUB_ENV
+          else
+            echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          fi
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
