@@ -1,0 +1,13 @@
+__pycache__
+.cache
+.mypy_cache
+*.sqlite
+settings_local.py
+etc/Caddyfile
+dev/cert
+tmp
+hosts.lnk
+storage
+front/ymsg/todo
+.mypy_cache
+.devtls_cache

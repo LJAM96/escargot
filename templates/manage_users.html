@@ -1,0 +1,168 @@
+<!-- File: templates/manage_users.html (Updated) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Escargot User Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; line-height: 1.6; }
+        .container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.1); max-width: 960px; margin: 20px auto; }
+        h1, h2 { color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 5px; margin-top: 30px; margin-bottom: 15px; }
+        h1 { margin-top: 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9em; }
+        th, td { padding: 10px 12px; border: 1px solid #ddd; text-align: left; vertical-align: middle; }
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .flash { padding: 12px 15px; margin-bottom: 15px; border-radius: 4px; font-size: 0.95em; }
+        .flash.error { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
+        .flash.success { background-color: #d4edda; color: #155724; border-color: #c3e6cb; }
+        .flash.warning { background-color: #fff3cd; color: #856404; border-color: #ffeeba; }
+        form { background-color: #fdfdfd; padding: 20px; border: 1px solid #eee; border-radius: 5px; margin-bottom: 30px; }
+        form div { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input[type="text"], input[type="password"], input[type="email"], select {
+            width: calc(100% - 24px); padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
+        }
+        select { width: 100%; appearance: none; background-color: white; background-image: url('data:image/svg+xml;charset=US-ASCII,<svg width="12" height="12" viewBox="0 0 4 5" xmlns="http://www.w3.org/2000/svg"><path fill="%23aaa" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 8px 10px; }
+        input[type="checkbox"] { margin-right: 5px; vertical-align: middle; }
+        .checkbox-label { font-weight: normal; display: inline-block; margin-left: 2px; margin-right: 15px;}
+        input[type="submit"], .button-link {
+            margin-top: 15px; padding: 8px 15px; background-color: #007bff; color: white;
+            border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em; text-decoration: none; display: inline-block; margin-right: 5px;
+        }
+        input[type="submit"]:hover, .button-link:hover { opacity: 0.9; }
+        .button-link.edit-btn { background-color: #ffc107; color:#333; }
+        .button-link.edit-btn:hover { background-color: #e0a800; }
+        button.delete-btn { background-color: #dc3545; font-size: 0.9em; padding: 8px 15px; margin-top: 0; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button.delete-btn:hover { background-color: #c82333; }
+        input[type="submit"].create-btn { background-color: #28a745; font-size: 1em; }
+        input[type="submit"].create-btn:hover { background-color: #218838; }
+        input[type="submit"].generate-btn { background-color: #17a2b8; }
+        input[type="submit"].generate-btn:hover { background-color: #138496; }
+        hr { margin: 40px 0; border: 0; border-top: 1px solid #eee; }
+        .action-cell { white-space: nowrap; }
+        .note { font-size: 0.85em; color: #666; margin-top: 5px; display: block; }
+        .warning-note { font-size: 0.9em; color: #856404; margin-top: 10px; }
+        .status-section { padding: 10px 0; margin-bottom: 15px; }
+        .status-online { color: green; font-weight: bold; }
+        .status-offline { color: red; font-weight: bold; }
+        .status-error { color: orange; font-weight: bold; }
+    </style>
+    <script>
+        function confirmDelete(email) {
+            return confirm(`Are you sure you want to delete the user with email "${email}"?\nThis action cannot be undone and performs basic deletion only.`);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Escargot User Management</h1>
+
+        <!-- Status Section -->
+        <div class="status-section">
+            <strong>MSN Service Status (Port 1863):</strong>
+            {% if msn_status == "Online" %}
+                <span class="status-online">{{ msn_status }}</span>
+            {% elif msn_status == "Offline" %}
+                 <span class="status-offline">{{ msn_status }}</span>
+            {% else %}
+                 <span class="status-error">{{ msn_status }}</span>
+            {% endif %}
+            <br><small class="note">Checks if the service is listening locally within the container.</small>
+        </div>
+        <!-- End Status Section -->
+
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <!-- Create User Form -->
+        <h2>Create New User</h2>
+        <form method="POST" action="{{ url_for('handle_create_user') }}">
+            <!-- ... (Create user form fields) ... -->
+             <div><label for="cu_email">Email:</label><input type="email" id="cu_email" name="email" required></div>
+             <div><label for="cu_username">Username:</label><input type="text" id="cu_username" name="username" required></div>
+             <div><label for="cu_friendly_name">Friendly Name:</label><input type="text" id="cu_friendly_name" name="friendly_name" placeholder="Defaults to username if blank"></div>
+             <div><label for="cu_password">Password:</label><input type="password" id="cu_password" name="password" required></div>
+             <div><input type="checkbox" id="cu_oldmsn" name="oldmsn" value="true" checked><label for="cu_oldmsn" class="checkbox-label">Enable Login for MSN 1.x-4.x (Optional)</label></div>
+             <div><input type="checkbox" id="cu_yahoo" name="yahoo" value="true"><label for="cu_yahoo" class="checkbox-label">Enable Login for Yahoo! Messenger</label></div>
+             <div><input type="checkbox" id="cu_verified" name="verified" value="true" checked><label for="cu_verified" class="checkbox-label">Verified User</label></div>
+             <small class="note">Note: Login for MSN 5.0+ / WLM is enabled automatically.</small>
+             <div><input type="submit" value="Create User" class="create-btn"></div>
+        </form>
+
+        <hr>
+
+        <!-- Generate Client Patch Form -->
+        <h2>Generate Client Patch (.reg)</h2>
+        <form method="POST" action="{{ url_for('handle_generate_reg') }}">
+             <div>
+                 <label for="reg_client_version">Select Client Version:</label>
+                 <select id="reg_client_version" name="client_version" required>
+                     {% for version in client_versions %}
+                         <option value="{{ version }}">{{ version }}</option>
+                     {% else %}
+                         <option value="">-- No Client Configurations Found --</option>
+                     {% endfor %}
+                 </select>
+             </div>
+             <div>
+                 <label for="reg_server_ip">Your Escargot Server IP/Hostname:</label>
+                 <input type="text" id="reg_server_ip" name="server_ip" required value="127.0.0.1" placeholder="e.g., 127.0.0.1 or 192.168.1.100">
+                 <small class="note">Enter the IP address or hostname that your MSN client machine will use to connect to the server.</small>
+             </div>
+             <div>
+                 <input type="submit" value="Generate .reg File" class="generate-btn">
+             </div>
+             <p class="warning-note"><strong>Warning:</strong> Running the generated .reg file will modify your Windows Registry. Only run files from sources you trust. This tool provides common patches but compatibility might vary.</p>
+        </form>
+
+        <hr>
+
+        <!-- Existing Users Table -->
+        <h2>Existing Users</h2>
+        {% if users %}
+        <table>
+             <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Username</th>
+                    <th>Friendly Name</th>
+                    <th>Verified</th>
+                    <th>Created (UTC)</th>
+                    <th>Last Login (UTC)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.friendly_name }}</td>
+                    <td>{{ 'Yes' if user.verified else 'No' }}</td>
+                    <td>{{ user.date_created.strftime('%Y-%m-%d %H:%M') if user.date_created else 'N/A' }}</td>
+                    <td>{{ user.date_login.strftime('%Y-%m-%d %H:%M') if user.date_login else 'N/A' }}</td>
+                    <td class="action-cell">
+                        <a href="{{ url_for('edit_user_page', user_email=user.email) }}" class="button-link edit-btn">Edit</a>
+                        <form method="POST" action="{{ url_for('handle_delete_user') }}" style="display: inline;" onsubmit="return confirmDelete('{{ user.email }}');">
+                             <input type="hidden" name="email" value="{{ user.email }}">
+                             <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No users found or error loading users.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

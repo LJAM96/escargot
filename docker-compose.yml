@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  escargot-server:
+    build: .
+    container_name: escargot-server
+    env_file:
+      - .env
+    ports:
+      - "5001:5001"  # Flask admin GUI
+      - "1863:1863"  # MSN Messenger default port
+    volumes:
+      - escargot_data:/usr/src/app/data
+      - escargot_certs:/usr/src/app/certs
+      - escargot_logs:/usr/src/app/logs
+      - escargot_migrations:/usr/src/app/migrations
+      - escargot_settings:/usr/src/app/settings
+    restart: unless-stopped
+    command: ["python", "admin_gui.py"]
+
+volumes:
+  escargot_data:
+  escargot_certs:
+  escargot_logs:
+  escargot_migrations:
+  escargot_settings:
