@@ -1,3 +1,7 @@
+@app.context_processor
+def inject_csrf_token():
+    from flask_wtf.csrf import generate_csrf
+    return dict(csrf_token=generate_csrf)
 # File: admin_gui.py (Updated)
 
 from flask import Flask, render_template, request, redirect, url_for, flash, Response, session
