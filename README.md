@@ -1,9 +1,7 @@
 # Escargot Messaging Server
 
-This is a server planning to support as many messaging platforms and technologies as possible. Support is planned for every messaging platform/technology that is either defunct and/or suitable for federation.
-
-See [escargot.log1p.xyz](https://escargot.log1p.xyz) for more information, and our [Escargot group](https://gitlab.com/escargot-chat) to see other components that complement our official server (site, patching components, etc.).
-
+Small modifications and improvments to the end of life escargot messenger server.
+including gui for user creation and docker support
 
 ## Support status
 
@@ -24,7 +22,3 @@ As of now, only YMSG9 and YMSG10 are implemented. It has only been tested on Yah
 IRC:
 
 IRC support is very basic. It only offers the ability to create, join, invite people to, leave, and list other people in temporary chats. It also requires `USER`-based login with your account credentials. Nicknames aren't supported.
-
-## Developers
-
-See [CONTRIBUTING.md](/CONTRIBUTING.md).
