@@ -1,4 +1,4 @@
-name: Auto Tag, Release, and Build Docker Image
+name: Auto Release
 
 on:
   push:
