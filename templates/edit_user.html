@@ -1,8 +1,9 @@
-      
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <me            </div>            <form method="POST"> <!-- POSTs back to the same /edit_user/<email> URL -->
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                 <h2>Change Password</h2>charset="UTF-8">
     <title>Edit User - Escargot Management</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; line-height: 1.6; }
@@ -49,9 +50,8 @@
                 <div><strong>Username:</strong> {{ user.username }}</div>
                 <div><strong>Friendly:</strong> {{ user.friendly_name }}</div>
                 <div><strong>Verified:</strong> {{ 'Yes' if user.verified else 'No' }}</div>
-            </div>
-
-            <form method="POST"> <!-- POSTs back to the same /edit_user/<email> URL -->
+            </div>            <form method="POST"> <!-- POSTs back to the same /edit_user/<email> URL -->
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                  <h2>Change Password</h2>
                  <div>
                     <label for="new_password">New Password:</label>
@@ -77,4 +77,3 @@
 </body>
 </html>
 
-    
